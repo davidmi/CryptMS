@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CryptMS</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="send">Send SMS</string>
+    <string name="phone_number_hint">Enter the recipient\'s phone number</string>
+    <string name="message_hint">Message</string>
+
+</resources>
