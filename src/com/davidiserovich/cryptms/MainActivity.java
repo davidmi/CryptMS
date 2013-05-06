@@ -85,7 +85,6 @@ public class MainActivity extends Activity{
 	public void sendButtonClick(View v){
 		Toast.makeText(this, "herro", Toast.LENGTH_SHORT).show();
 		
-		
 		String phoneNumber = phoneNumberField.getText().toString();
         String message = textField.getText().toString();
         /*
