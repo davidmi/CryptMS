@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.View;
@@ -86,13 +87,23 @@ public class MainActivity extends Activity{
 		
 		
 		String phoneNumber = phoneNumberField.getText().toString();
-        String message = textField.getText().toString();                 
+        String message = textField.getText().toString();
+        /*
         if (phoneNumber.length()>0 && message.length()>0)                
             sendSMS(phoneNumber, message);                
         else
             Toast.makeText(getBaseContext(), 
                 "Please enter both phone number and message.", 
                 Toast.LENGTH_SHORT).show();
+                */
+        
+        String msg = "secret msg";
+        EncryptionManager enc = new EncryptionManager(getPreferences(MODE_PRIVATE), "testpassword");
+        
+        byte[] crypted = enc.encrypt(msg.getBytes(), enc.getPublicModulus(), enc.getPublicExponent());
+        String dec = new String(enc.decrypt(crypted));
+        Toast.makeText(this, dec, Toast.LENGTH_SHORT).show();
+        
 	}
 	
 	@Override

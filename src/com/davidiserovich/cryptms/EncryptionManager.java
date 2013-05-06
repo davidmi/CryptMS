@@ -33,6 +33,11 @@ public class EncryptionManager {
 	public EncryptionManager(SharedPreferences s, String password){
 		this.s = s;
 		this.password = password;
+		
+		/** Generate a keypair if the SharedPreferences does not yet contain one */
+		if (s.getString("private_key", null) == null){
+			generateKeypair();
+		}
 	}
 	
 	public BigInteger getPublicExponent(){
@@ -40,7 +45,7 @@ public class EncryptionManager {
 	}
 	
 	public BigInteger getPublicModulus(){
-		return new BigInteger(s.getString("public_exponent", null));
+		return new BigInteger(s.getString("public_modulus", null));
 	}
 	
 	/**
@@ -152,6 +157,7 @@ public class EncryptionManager {
 		
 		} catch (Exception e) {
 			Log.e("CryptMS", "KEYGEN ERROR " + e.toString());
+			throw new RuntimeException("RSA KEYGEN ERROR " + e.toString());
 		}	
 	}
 
