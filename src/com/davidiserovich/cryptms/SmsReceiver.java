@@ -31,7 +31,8 @@ public class SmsReceiver extends BroadcastReceiver{
             //---display the new SMS message---
             Toast.makeText(c, str, Toast.LENGTH_SHORT).show();
         }
-        /** Check the message's header. If it's good, then put this message in the message queue in
+        
+        /** Check the message's header. If it's good, then put this message in the message list in
          *  sharedpreferences
         SharedPreferences sp = c.getSharedPreferences("MainActivity", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
