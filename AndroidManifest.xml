@@ -7,9 +7,10 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+
+  	<uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
-    
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     
 
     <application
@@ -27,13 +28,16 @@
             </intent-filter>
         </activity>
         
-        <receiver android:name=".SmsReceiver"> 
+        <receiver android:name="com.davidiserovich.cryptms.SmsReceiver"> 
             <intent-filter> 
-                <action android:name=
-                    "android.provider.Telephony.SMS_RECEIVED" /> 
+                <action android:name="android.intent.action.DATA_SMS_RECEIVED" /> 
+	            <data android:scheme="sms" /> 
+	            <data android:port="6688" /> 
             </intent-filter> 
         </receiver>
         
     </application>
+    
+
 
 </manifest>

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.telephony.SmsManager;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ public class MainActivity extends Activity{
 	
 	String SENT = "SMS_SENT";
     String DELIVERED = "SMS_DELIVERED";
+    
+    short CRYPTMS_PORT = 6688;
 	
 	private void sendSMS(String phoneNumber, String message){
 		
@@ -79,29 +82,31 @@ public class MainActivity extends Activity{
         }, new IntentFilter(DELIVERED));        
  
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);        
+        //sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        sms.sendDataMessage(phoneNumber, null, CRYPTMS_PORT, message.getBytes(), sentPI, deliveredPI);
     }
 	
 	public void sendButtonClick(View v){
-		Toast.makeText(this, "herro", Toast.LENGTH_SHORT).show();
 		
 		String phoneNumber = phoneNumberField.getText().toString();
         String message = textField.getText().toString();
-        /*
+        
         if (phoneNumber.length()>0 && message.length()>0)                
             sendSMS(phoneNumber, message);                
         else
             Toast.makeText(getBaseContext(), 
                 "Please enter both phone number and message.", 
                 Toast.LENGTH_SHORT).show();
-                */
         
         String msg = "secret msg";
         EncryptionManager enc = new EncryptionManager(getPreferences(MODE_PRIVATE), "testpassword");
         
         byte[] crypted = enc.encrypt(msg.getBytes(), enc.getPublicModulus(), enc.getPublicExponent());
+        String cryptBase64 = Base64.encodeToString(crypted, Base64.DEFAULT);
+        Toast.makeText(this, Integer.toString(cryptBase64.length()), Toast.LENGTH_SHORT).show();
         String dec = new String(enc.decrypt(crypted));
         Toast.makeText(this, dec, Toast.LENGTH_SHORT).show();
+
         
 	}
 	

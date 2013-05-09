@@ -38,7 +38,7 @@ public class EncryptionManager {
 		this.password = password;
 		
 		/** Generate a keypair if the SharedPreferences does not yet contain one */
-		if (true){//(s.getString("private_key", null) == null){
+		if (s.getString("private_key", null) == null){
 			generateKeypair();
 		}
 		

@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
-public class SMSReceiver extends BroadcastReceiver{
+public class SmsReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context c, Intent intent){
 		//---get the SMS message passed in---
@@ -25,7 +25,7 @@ public class SMSReceiver extends BroadcastReceiver{
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
                 str += "SMS from " + msgs[i].getOriginatingAddress();                     
                 str += " :";
-                str += msgs[i].getMessageBody().toString();
+                str += new String(msgs[i].getUserData());
                 str += "\n";        
             }
             //---display the new SMS message---
