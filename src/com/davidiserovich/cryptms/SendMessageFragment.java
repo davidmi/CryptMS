@@ -21,8 +21,7 @@ public class SendMessageFragment extends Fragment {
 	TextView phoneNumberField;
 	TextView textField;
 	
-	String SENT = "SMS_SENT";
-    String DELIVERED = "SMS_DELIVERED";
+
     
     private Activity currentActivity;
     
@@ -37,58 +36,12 @@ public class SendMessageFragment extends Fragment {
 	private void sendSMS(String phoneNumber, byte[] message){
 		
         PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0,
-            new Intent(SENT), 0);
+            new Intent(MainActivity.SENT), 0);
  
         PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0,
-            new Intent(DELIVERED), 0);
+            new Intent(MainActivity.DELIVERED), 0);
  
-        //---when the SMS has been sent---
-        currentActivity.registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(currentActivity.getBaseContext(), "SMS sent", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(currentActivity.getBaseContext(), "Generic failure", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(currentActivity.getBaseContext(), "No service", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(currentActivity.getBaseContext(), "Null PDU", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(currentActivity.getBaseContext(), "Radio off", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }, new IntentFilter(SENT));
- 
-        //---when the SMS has been delivered---
-        currentActivity.registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(currentActivity.getBaseContext(), "SMS delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(currentActivity.getBaseContext(), "SMS not delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;                        
-                }
-            }
-        }, new IntentFilter(DELIVERED));        
+               
  
         SmsManager sms = SmsManager.getDefault();
         //sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
@@ -106,11 +59,14 @@ public class SendMessageFragment extends Fragment {
         	Toast.makeText(currentActivity, "WRONG CRYPTED MESSAGE LENGTH " + Integer.toString(crypted.length), Toast.LENGTH_SHORT);
         }
         
-        byte[] part1 = new byte[128];
-        byte[] part2 = new byte[128];
+        byte[] part1 = new byte[129];
+        byte[] part2 = new byte[129];
         
-        System.arraycopy(crypted, 0, part1, 0, 128);
-        System.arraycopy(crypted, 128, part2, 0, 128);
+        part1[0] = 1;
+        part2[0] = 2;
+        
+        System.arraycopy(crypted, 0, part1, 1, 128);
+        System.arraycopy(crypted, 128, part2, 1, 128);
         
         if (phoneNumber.length()>0 && message.length()>0){                
             sendSMS(phoneNumber, part1);

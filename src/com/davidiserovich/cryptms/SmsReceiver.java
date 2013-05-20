@@ -1,5 +1,7 @@
 package com.davidiserovich.cryptms;
 
+import java.util.Arrays;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,14 +37,37 @@ public class SmsReceiver extends BroadcastReceiver{
                 
 	            //First, since the data comes in two pieces, check for the first.
 	            String firstmsg = sp.getString("part1", "");
-	            if (firstmsg.equals("")){
-	            	editor.putString("part1", Base64.encodeToString(msgs[i].getUserData(), Base64.DEFAULT));
+	            String secondmsg = sp.getString("part2", "");
+	            byte[] data = msgs[i].getUserData();
+	            byte seq_num = data[0];
+	            if (seq_num == 1){
+	            	Toast.makeText(c, "got part 1", Toast.LENGTH_SHORT).show();
+	            }
+	            else if (seq_num == 2){
+	            	Toast.makeText(c, "got part 2", Toast.LENGTH_SHORT).show();
+	            }
+	            data = Arrays.copyOfRange(data, 1, 129);
+	            
+	            
+	            if (seq_num == 2 && firstmsg.equals("")){
+	            	editor.putString("part2", Base64.encodeToString(data, Base64.DEFAULT));
 	            	editor.commit();
 	            }
+	            else if (seq_num == 1 && secondmsg.equals("")){
+	            	editor.putString("part1", Base64.encodeToString(data, Base64.DEFAULT));
+	            	editor.commit();
+;
+	            }
 	            else{
-	            	byte[] firstBytes = Base64.decode(firstmsg, Base64.DEFAULT);
-	            	byte[] fulldata = new byte[firstBytes.length + msgs[i].getUserData().length];
-	            	byte[] current = msgs[i].getUserData();
+	            	byte[] firstBytes;
+	            	
+	            	if (seq_num == 2)
+	            		firstBytes = Base64.decode(firstmsg, Base64.DEFAULT);
+	            	else
+	            		firstBytes = Base64.decode(secondmsg, Base64.DEFAULT);
+	            	
+	            	byte[] fulldata = new byte[firstBytes.length + data.length];
+	            	byte[] current = data;
 	            	System.arraycopy(firstBytes, 0, fulldata, 0, firstBytes.length);
 	            	System.arraycopy(current, 0, fulldata, firstBytes.length, current.length);
 	            	
@@ -59,6 +84,7 @@ public class SmsReceiver extends BroadcastReceiver{
 	        		
 	        		editor.putString("messages", messageArray.toString());
 	        		editor.putString("part1", "");
+	        		editor.putString("part2", "");
 	        		
 	        		Toast.makeText(c, "Inserted message!", Toast.LENGTH_SHORT).show();
 	        		
