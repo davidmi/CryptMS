@@ -1,15 +1,6 @@
 package com.davidiserovich.cryptms;
 
-import java.io.File;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
-
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -18,15 +9,12 @@ import android.app.FragmentTransaction;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
 import android.widget.Toast;
 import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 
 public class MainActivity extends Activity implements ActionBar.TabListener{
 
@@ -130,24 +118,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener{
 		}, new IntentFilter(DELIVERED)); 
 
 	}
-
-	/**
-	 * Utility method for checking if an app to fulfill an Intent is available.
-	 * Thanks https://developer.android.com/training/camera/photobasics.html
-	 *
-	 * @param context
-	 * @param action
-	 * @return
-	 */
-	public static boolean isIntentAvailable(Context context, String action) {
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent(action);
-		List<ResolveInfo> list =
-				packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-		return list.size() > 0;
-	}
-
-	
 
 	/* The following are each of the ActionBar.TabListener callbacks */
 
