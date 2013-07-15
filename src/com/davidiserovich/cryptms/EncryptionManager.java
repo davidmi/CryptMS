@@ -32,7 +32,15 @@ public class EncryptionManager {
 	private SharedPreferences s;
 	private BigInteger privateKey;
 	
+	/** 
+	 * Initialize the encryption manager
+	 * 
+	 * @param s SharedPreferences of the app, which stores keys
+	 * @param password the user's password, to decrypt the AES-256 encrypted private key
+	 * from the SharedPreferences
+	 */
 	public EncryptionManager(SharedPreferences s, String password){
+		
 		this.s = s;
 		this.password = password;
 		
@@ -45,8 +53,7 @@ public class EncryptionManager {
 		byte[] privKeyEncrypted = Base64.decode(s.getString("private_key",null), Base64.DEFAULT);
 		byte[] salt = Base64.decode(s.getString("salt", null), Base64.DEFAULT);
 		
-		
-		privateKey = new BigInteger(new String(aesDecrypt(password, iv, salt, privKeyEncrypted)));
+ 		privateKey = new BigInteger(new String(aesDecrypt(password, iv, salt, privKeyEncrypted)));
 	}
 	
 	public BigInteger getPublicExponent(){
@@ -91,6 +98,13 @@ public class EncryptionManager {
 		return true;
 	}
 	
+	/**
+	 * Generate a secret key for use in AES crypt
+	 * 
+	 * @param password
+	 * @param salt
+	 * @return
+	 */
 	private SecretKey getSecretKey(String password, byte[] salt){
 		char[] pass = new char[password.length()];
 		password.getChars(0, password.length(), pass, 0);
@@ -109,7 +123,14 @@ public class EncryptionManager {
 		}
 	}
 	
-	/** Decrypt using AES */
+	/**
+	 * Decrypt using AES
+	 * @param password the user's password
+	 * @param iv the iv of the AES key
+	 * @param salt the salt used for the AES key
+	 * @param message the message to decrypt
+	 * @return
+	 */
 	private byte[] aesDecrypt(String password, byte[] iv, byte[] salt, byte[] message){
 		try{
 			Cipher c = Cipher.getInstance("AES/CBC/PKCS5PADDING");
@@ -129,6 +150,7 @@ public class EncryptionManager {
 	
 	/**
 	 * Encrypt the given data using RSA
+	 * 
 	 * @param data the byte array to encrypt
 	 * @param modulus the public key's modulus
 	 * @param exponent the public key's exponent
@@ -151,7 +173,8 @@ public class EncryptionManager {
 	}
 	
 	/**
-	 * Decrypts the data with the private key stored in the EncryptionManager's SharedPreferences
+	 * Decrypt the data with the private key stored in the EncryptionManager's SharedPreferences
+	 * 
 	 * @param data the data to decrypt
 	 * @return the byte[] of the decrypted data, or null if the decryption failed
 	 */
